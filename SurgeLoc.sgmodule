@@ -1,0 +1,10 @@
+#!name=SurgeLoc
+#!desc=iOS 全系統定位模擬 | ⚠️ 警告：攔截會使服務暫停。套用及關閉後皆須重啟系統定位開關。 Intercepting suspends services. Restart Location Services after apply/disable. | Config: http://loc.config
+#!system=ios
+
+[MITM]
+hostname = %APPEND% *.apple.com, loc.config
+
+[Script]
+# Location Spoof & Control Interface
+SurgeLoc = type=http-request,pattern=^https?:\/\/(.*\.apple\.com\/clls\/wloc|loc\.config),requires-body=1,binary-body-mode=1,script-path=https://raw.githubusercontent.com/lude0000/SurgeLoc/main/SurgeLoc.js
