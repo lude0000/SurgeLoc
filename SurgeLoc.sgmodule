@@ -1,0 +1,13 @@
+#!name=SurgeLoc
+#!desc=iOS 全系統定位模擬:攔 gs-loc 改寫 Wi-Fi + 基地台座標。用法:瀏覽器開 http://loc.config 選點套用 → 每次套用/還原後,把「設定 > 定位服務」關再開一次。
+#!system=ios
+
+[MITM]
+hostname = %APPEND% gs-loc.apple.com, gs-loc-cn.apple.com, gsp-ssl.ls.apple.com, bluedot.is.autonavi.com, bluedot.is.autonavi.com.gds.alibabadns.com, loc.config
+
+[Script]
+# 定位回應改寫(攔 Apple 的 wloc 回應,改 Wi-Fi 熱點 + 基地台座標)
+SurgeLoc = type=http-response,pattern=^https?:\/\/(?:gs-loc(?:-cn)?\.apple\.com|gsp-ssl\.ls\.apple\.com|bluedot\.is\.autonavi\.com(?:\.gds\.alibabadns\.com)?)\/clls\/wloc(?:\?.*)?$,requires-body=1,binary-body-mode=1,max-size=1048576,timeout=10,script-path=https://raw.githubusercontent.com/lude0000/SurgeLoc/main/SurgeLoc.js
+
+# 控制台 + API(loc.config):網頁選點介面,以及 /set /fav /cat /search /reverse 等端點
+SurgeLocConfig = type=http-request,pattern=^https?:\/\/loc\.config,requires-body=1,script-path=https://raw.githubusercontent.com/lude0000/SurgeLoc/main/SurgeLoc.js
