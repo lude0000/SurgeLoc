@@ -105,6 +105,7 @@ async function handleConfig() {
 }
 
 // --- Location Injector ---
+// Protobuf 欄位定義參考: https://github.com/acheong08/apple-corelocation-experiments/blob/main/pb/BSSIDApple.proto
 function handleLocation() {
     try {
         const saved = JSON.parse($persistentStore.read(STORAGE_KEY) || '{"lat":34.052235,"lon":-118.243683}');
@@ -119,14 +120,25 @@ function handleLocation() {
         if (bssids.length === 0) bssids.push(new TextEncoder().encode("aa:bb:cc:dd:ee:ff"));
         const latInt = BigInt(Math.round(saved.lat * 1e8));
         const lonInt = BigInt(Math.round(saved.lon * 1e8));
-        const now = BigInt(Math.floor(Date.now() / 1000));
-        let locBuf = [...wb(1, latInt), ...wb(2, lonInt), ...wb(3, 20n), ...wb(9, now)];
+        // 隨機水平精度 30-50m，模擬真實 Wi-Fi 三角定位精度範圍
+        const hAccuracy = BigInt(30 + Math.floor(Math.random() * 21));
+        let locBuf = [
+            ...wb(1, latInt),          // latitude (×10⁸)
+            ...wb(2, lonInt),          // longitude (×10⁸)
+            ...wb(3, hAccuracy),       // horizontal_accuracy (30-50m)
+            ...wb(4, 3n),              // unknown_value4 (acheong08: 固定填 3)
+            ...wb(5, 530n),            // altitude (海拔)
+            ...wb(6, 1000n),           // vertical_accuracy
+            ...wb(11, 63n),            // motion_activity_type
+            ...wb(12, 467n),           // motion_activity_confidence
+        ];
         let allWifiBuf = [];
         for (let mac of bssids) {
             let wifi = [0x0a, 0x11, ...mac, ...wl(2, locBuf)];
             allWifiBuf.push(...wl(2, wifi));
         }
-        let appBuf = [...allWifiBuf, ...wb(4, BigInt(bssids.length)), ...wb(5, 0n)];
+        // 對齊 acheong08: 不填入 num_cell_results / num_wifi_results / device_type (設為 nil)
+        let appBuf = [...allWifiBuf];
         let res = new Uint8Array(10 + appBuf.length);
         res.set([0x00, 0x01, 0x00, 0x00, 0x00, 0x01], 0);
         let l = appBuf.length;
