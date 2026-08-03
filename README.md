@@ -32,7 +32,7 @@ https://raw.githubusercontent.com/lude0000/SurgeLoc/main/SurgeLoc.sgmodule
 - **定位** → 呼叫 `/set?lat=&lon=` 改定位,並自動跳到「定位服務」開關讓你關再開。
 - **收藏** → 呼叫 `/fav/add?lat=&lon=`(未指定分類 → 自動歸「未分類」)。
 
-取得捷徑:**[加入捷徑](https://www.icloud.com/shortcuts/12faf9e4acb04cc98db6c9eea704d0ba)**
+取得捷徑:**[加入捷徑](https://www.icloud.com/shortcuts/2dc50ce5ee67426fa8058ac08fa2dee4)**
 
 > Google 地圖需展開短網址,偶爾會延遲或轉不到,多試幾次即可。
 
@@ -88,7 +88,7 @@ One shortcut does it all: share a place from **Google Maps or Apple Maps** to it
 - **Set** → calls `/set?lat=&lon=` to change location, then jumps straight to the Location Services toggle.
 - **Save** → calls `/fav/add?lat=&lon=` (no category → "未分類").
 
-Get the shortcut: **[Add to Shortcuts](https://www.icloud.com/shortcuts/12faf9e4acb04cc98db6c9eea704d0ba)**
+Get the shortcut: **[Add to Shortcuts](https://www.icloud.com/shortcuts/2dc50ce5ee67426fa8058ac08fa2dee4)**
 
 > Google Maps requires expanding a short link, which can occasionally lag or fail — just try again a few times.
 

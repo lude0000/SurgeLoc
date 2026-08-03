@@ -2450,21 +2450,23 @@ setTimeout(function(){map.invalidateSize()},200);
 var pendingFavId=null;
 /* 網頁內通知條(取代 alert / Surge 通知)*/
 var toastTimer=null;
-function toast(msg,actLabel,actFn,closeLabel){
+function toast(msg,actLabel,actFn,closeLabel,hold){
   var t=document.getElementById('toast');t.querySelector('.tmsg').textContent=msg;
   var btns=t.querySelector('.tbtns'),b=t.querySelector('.tact'),cb=t.querySelector('.tclose');
   clearTimeout(toastTimer);
-  if(actLabel){
-    btns.style.display='flex';b.textContent=actLabel;b.onclick=function(){hideToast();actFn&&actFn();};
+  if(actLabel){                 // 動作鈕 + 關閉鈕,停留
+    btns.style.display='flex';b.style.display='';b.textContent=actLabel;b.onclick=function(){hideToast();actFn&&actFn();};
     cb.textContent=closeLabel||'關閉';
-    // 有動作 → 不自動關閉,由使用者按下按鈕
-  }else{
+  }else if(hold){               // 只有關閉鈕,停留(例:提醒重啟定位服務)
+    btns.style.display='flex';b.style.display='none';cb.textContent=closeLabel||'知道了';
+  }else{                        // 無鈕,2.4 秒自動關閉
     btns.style.display='none';toastTimer=setTimeout(hideToast,2400);
   }
   t.classList.add('show');
 }
 function hideToast(){document.getElementById('toast').classList.remove('show');}
-function openLoc(){location.href='prefs:root=Privacy&path=LOCATION';}
+/* 網頁不能直接開 prefs: 設定,改用公開的 shortcuts: scheme 跑捷徑,由捷徑去跳定位服務 */
+function openLoc(){location.href='shortcuts://run-shortcut?name=SurgeLoc&input=SurgeLoc';}
 /* 右下浮動選單 */
 function fabToggle(){var f=document.getElementById('fab');f.classList.toggle('open');f.querySelector('.fab-main').textContent=f.classList.contains('open')?'✕':'☰';}
 function fabClose(){var f=document.getElementById('fab');f.classList.remove('open');f.querySelector('.fab-main').textContent='☰';}
